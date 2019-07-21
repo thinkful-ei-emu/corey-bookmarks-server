@@ -6,6 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const logger = require('./logger');
+const bookmarkRouter = require('./bookmarks/bookmarks-router');
 
 // const bookmarksRouter = require('./bookmarks/bookmarks-router');
 
@@ -39,7 +40,6 @@ app.use(function errorHandler(error, req, res, next) {
   if (NODE_ENV === 'production') {
     response = { error: { message: 'server error' } };
   } else {
-    console.error(error);
     response = { message: error.message, error};
   }
   res.status(500).json(response);
@@ -48,5 +48,6 @@ app.use(function errorHandler(error, req, res, next) {
 app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
+app.use(bookmarkRouter);
 
 module.exports = app;
