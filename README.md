@@ -22,6 +22,11 @@ Start the application `npm start`
 Start nodemon for the application `npm run dev`
 
 Run the tests `npm test`
+npm install
+npm i postgrator-cli -D
+npm i pg
+npm i knex
+npm run migrate -- [0 - number to which point to migrate to]
 
 ## Deploying
 
