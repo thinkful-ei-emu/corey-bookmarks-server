@@ -7,16 +7,20 @@ const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const logger = require('./logger');
 const bookmarkRouter = require('./bookmarks/bookmarks-router');
+const bookmarkService = require('./bookmark-service');
 
 // const bookmarksRouter = require('./bookmarks/bookmarks-router');
 
 const app = express();
 app.use(express.json());
 
+
+
 //API token validation 
 app.use(function validateBearerToken(req, res, next) {
+  //console.log(req.app.get('potatoe'));//this comes from app.set
   const apiToken = process.env.API_TOKEN;
-  const authToken = req.get('Authorization');
+  const authToken = req.get('Authorization');//this comes from the header of the request
 
   if (!authToken || authToken.split(' ')[1] !== apiToken) {
     //via winston: an invalid token will display this message and added that log to info.log
@@ -31,8 +35,40 @@ const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
   : 'common';
 
-app.get('/', (req, res) => { 
-  res.send('Hello, world!'); 
+app.use('/bookmark', bookmarkRouter);
+
+// app.get('/bookmark', (req, res, next) => { //get endpoint
+//   const knexInstance = req.app.get('bookmarksDb');
+//   bookmarkService.getAllBookmarks(knexInstance)
+//     .then(bookmarks => {
+//       if (!bookmarks) {
+//         return res.status(404).json({
+//           error: { message: 'Bookmark\'s not found' }
+//         });
+//       }
+//       res.json({
+//         // id: bookmark.id,
+//         // title: bookmark.title,
+//         // url: bookmark.url,
+//         // description: bookmark.description,
+//         // rating: bookmark.rating
+//       });
+//     })
+//     .catch(next);
+// });
+
+app.get('/bookmark/:bookmark_id', (req, res, next) => {
+  const knexInstance = req.app.get('bookmarksDb');
+  bookmarkService.getById(knexInstance, req.params.article_id)
+    .then(bookmark => {
+      if (!bookmark) {
+        return res.status(404).json({
+          error: { message: 'Cannot find this bookmark' }
+        });
+      }
+      res.json();
+    })
+    .catch(next);
 });
 
 app.use(function errorHandler(error, req, res, next) {

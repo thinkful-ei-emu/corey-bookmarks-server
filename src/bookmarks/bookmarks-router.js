@@ -1,7 +1,9 @@
 const express = require('express');
 const logger = require('../logger');
 const uuid = require('uuid/v4');
-const { bookmarks } = require('../store');
+//const { bookmarks } = require('../store');
+//connect to bookmark route knexInstance intead of bookmarks store
+//then connecnt bookmark service
 
 const bookmarkRouter = express.Router();
 const bodyParser = express.json();
@@ -10,7 +12,7 @@ const bodyParser = express.json();
 bookmarkRouter
   .route('/bookmark')
   .get((req, res) => {
-    res.json(bookmarks);
+    res.json(/*change*/);
   })
   .post(bodyParser, (req, res) => {
 
